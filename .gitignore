@@ -1,0 +1,36 @@
+# Local Python environments
+.venv/
+venv/
+
+# Python bytecode and tool caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Airflow runtime output
+/logs/
+*.log
+/airflow.cfg
+/webserver_config.py
+/airflow.db
+/airflow.db-*
+/airflow*.pid
+
+# API responses downloaded by second_dag_stub.py
+/dags/[0-9]*_user.json
+
+# Local environment settings; keep shareable examples
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Operating system metadata
+.DS_Store
+._*
+Thumbs.db

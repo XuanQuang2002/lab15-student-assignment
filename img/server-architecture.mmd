@@ -1,0 +1,34 @@
+graph TD
+    User([Data Engineer / User]) -->|"HTTP :8080"| Web[Airflow Webserver]
+    User -->|"HTTP :8081"| SparkWeb[Spark Master UI]
+    User -->|"psql / BI Tool :5432"| DatamartDB[(Datamart Postgres)]
+
+    subgraph Docker_Compose_Environment
+        Web[Airflow Webserver]
+        Sched[Airflow Scheduler]
+        Init[Airflow Init]
+        MetaDB[(Airflow Metadata DB - Postgres)]
+        DatamartDB[(Datamart - Postgres)]
+        SparkMaster[Spark Master :7077]
+        SparkWorker[Spark Worker]
+
+        Web <-->|"Read/Write State"| MetaDB
+        Sched <-->|"Read/Write State"| MetaDB
+        Init -->|"Initialize DB"| MetaDB
+
+        Sched -->|"SparkSubmitOperator"| SparkMaster
+        SparkMaster ---|"Manages"| SparkWorker
+        
+        SparkWorker -->|"Read CSV / Write Parquet"| Volumes[Mounted Volumes: ./data]
+        SparkWorker -->|"Load Data (JDBC)"| DatamartDB
+    end
+
+    classDef db fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef airflow fill:#aae,stroke:#333,stroke-width:2px;
+    classDef ext fill:#ddd,stroke:#333,stroke-width:2px;
+    classDef spark fill:#ff9900,stroke:#333,stroke-width:2px;
+    
+    class MetaDB,DatamartDB db;
+    class Web,Sched,Init airflow;
+    class SparkMaster,SparkWorker,SparkWeb spark;
+    class User,Volumes ext;
